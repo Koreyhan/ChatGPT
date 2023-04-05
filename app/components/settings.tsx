@@ -30,7 +30,7 @@ import { getCurrentVersion } from "../utils";
 import Link from "next/link";
 import { UPDATE_URL } from "../constant";
 import { SearchService, usePromptStore } from "../store/prompt";
-import { requestUsage } from "../requests";
+import { requestUsage, requestTrace } from "../requests";
 import { ErrorBoundary } from "./error";
 
 function SettingItem(props: {
@@ -133,6 +133,17 @@ export function Settings(props: { closeSettings: () => void }) {
       checkUsage();
     }
   }, [showUsage]);
+
+  const [traceInfo, setTraceInfo] = useState<Record<string, string>>({});
+  useEffect(() => {
+    requestTrace()
+      .then((res) => {
+        setTraceInfo(res);
+      })
+      .catch((err) => {
+        console.error(err);
+      });
+  }, []);
 
   return (
     <ErrorBoundary>
@@ -527,6 +538,15 @@ export function Settings(props: { closeSettings: () => void }) {
                 );
               }}
             ></input>
+          </SettingItem>
+        </List>
+
+        <List>
+          <SettingItem
+            title="地区检测"
+            subTitle="注意不要在 OPEN AI 不允许的地区使用，否则 KEY 容易被封"
+          >
+            <div>{traceInfo?.loc}</div>
           </SettingItem>
         </List>
       </div>

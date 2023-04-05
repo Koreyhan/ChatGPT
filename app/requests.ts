@@ -228,3 +228,11 @@ export const ControllerPool = {
     return `${sessionIndex},${messageIndex}`;
   },
 };
+
+export async function requestTrace() {
+  const res = await fetch("/api/get-trace", {
+    method: "GET",
+  });
+  const data = await res.json();
+  return data;
+}
